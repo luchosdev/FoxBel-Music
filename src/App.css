@@ -1,0 +1,19 @@
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap');
+
+#root {
+  max-width: 1280px;
+  height: 100vh;
+  margin: 0 auto;
+  padding: 0;
+  text-align: center;
+font-family: 'Quicksand', sans-serif;
+}
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
