@@ -5,8 +5,8 @@ import { HiSpeakerXMark, HiSpeakerWave } from 'react-icons/hi2';
 
 function Player() {
   const [volumen, setVolumen] = useState(50); // valor inicial del volumen
-  const [prevVolumen, setPrevVolumen] = useState(volumen); // almacenar la posición anterior del volumen
-  const [icono, setIcono] = useState(<HiSpeakerWave />); // icono actual del volumen
+  const [prevVolumen, setPrevVolumen] = useState(volumen); // almacenar posición anterior del volumen
+  const [icono, setIcono] = useState(<HiSpeakerWave className="h-8 w-8" />); // icono actual del volumen
 
   function handleVolumenChange(event) {
     setVolumen(event.target.value); // actualizar el valor del volumen cuando cambie el input

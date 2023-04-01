@@ -1,72 +1,131 @@
-import React, { useState, useEffect } from 'react';
-import { SearchIcon } from '@heroicons/react/outline';
-import { MdPlayArrow } from 'react-icons/md';
-import { BsFillPersonFill } from 'react-icons/bs';
+import React, { useState } from 'react';
 import axios from 'axios';
+import './Body.css';
+import { BsFillPersonFill } from 'react-icons/bs';
 
 function Body() {
   const [searchTerm, setSearchTerm] = useState('');
-  const [albumImage, setAlbumImage] = useState(null);
+  const [searchResults, setSearchResults] = useState([]);
+  const [currentTrack, setCurrentTrack] = useState(null);
 
-  const handleInputChange = (e) => {
-    setSearchTerm(e.target.value);
+  const handleSearch = () => {
+    axios
+      .get(`https://deezerdevs-deezer.p.rapidapi.com/search?q=${searchTerm}`, {
+        headers: {
+          'X-RapidAPI-Key':
+            'cbd24544e9msh6c9b778c487480cp1cf9a0jsn450ccaa3a77a',
+          'X-RapidAPI-Host': 'deezerdevs-deezer.p.rapidapi.com',
+        },
+      })
+      .then((response) => {
+        setSearchResults(response.data.data.slice(0, 10));
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   };
 
-  useEffect(() => {
-    axios
-      .get('http://api.deezer.com/album/302127')
-      .then(({ data }) => {
-        setAlbumImage(data.cover_big);
-      })
-      .catch((error) => console.error(error));
-  }, []);
+  const handleKeyPress = (event) => {
+    if (event.key === 'Enter') {
+      handleSearch();
+    }
+  };
+
+  const handleInputChange = (event) => {
+    setSearchTerm(event.target.value);
+  };
+
+  const handlePlay = (track) => {
+    if (!currentTrack || currentTrack.id !== track.id) {
+      setCurrentTrack(track);
+    } else {
+      setCurrentTrack(null);
+    }
+  };
 
   return (
-    <section className="w-">
-      {/* Barra de Búsqueda */}
-      <div className="mx-8 flex h-1/6 items-center justify-between">
-        <div className="relative text-gray-600">
-          <input
-            type="search"
-            name="search"
-            placeholder="Buscar"
-            className="box-border w-[32.7rem] rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-900 placeholder-gray-500 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-600"
-            value={searchTerm}
-            onChange={handleInputChange}
-            style={{ boxSizing: 'border-box' }}
-          />
-          <button
-            type="submit"
-            className="absolute inset-y-0 right-0 px-3 py-2"
-            style={{ boxSizing: 'border-box' }}
-          >
-            <SearchIcon className="h-5 w-5 text-gray-400" />
-          </button>
-        </div>
-        <div className="flex gap-x-3">
-          <BsFillPersonFill size={24} color="red" />
-          <div>Luis Sequera</div>
-        </div>
-      </div>
-      {/* Info-Cover Artista */}
-      <div className="h-2/6 w-full">
-        <div className="relative h-64 w-64">
-          <div />
-          <MdPlayArrow className="my-auto h-12 w-12 rounded-full" />
-        </div>
-        <div>
+    <div className="h-full bg-gray-200">
+      <div className="z-50 w-full px-8">
+        <div className="flex">
+          <div className="relative">
+            <input
+              className="search-input mb-2 h-9 w-[30rem] rounded-full border px-4 py-2 pr-10 text-lg text-Soft_gray"
+              type="text"
+              placeholder="Buscar"
+              onChange={handleInputChange}
+              onKeyPress={handleKeyPress}
+            />
+            <button
+              type="button"
+              className="search-button absolute right-0 top-0 flex h-full w-10 items-center justify-center rounded-r text-Soft_gray"
+              onClick={handleSearch}
+            >
+              <i className="fa fa-search" aria-hidden="true" />
+            </button>
+          </div>
           <div>
-            <h1>Adela 21</h1>
-            <div>
-              <p>Lo mejor de Adele</p>
-              <span>321.123 seguidores</span>
-            </div>
+            <BsFillPersonFill />
           </div>
         </div>
       </div>
+
       {/* Resultados de búsqueda */}
-      <div className="h-3/6">resultados</div>
-    </section>
+      {searchResults.length > 0 && (
+        <h1 className="pb-2 pl-10 text-left text-xl font-bold text-Red_Principal">
+          Resultados
+        </h1>
+      )}
+
+      <div
+        className="relative grid h-80 grid-cols-5"
+        style={{
+          overflowY:
+            searchResults.length > 0 && searchResults.length > 5
+              ? 'scroll'
+              : 'auto',
+        }}
+      >
+        {searchResults.map((result, index) => (
+          <div
+            key={result.id}
+            className="mx-auto flex flex-col px-4"
+            style={{ width: '150px' }}
+          >
+            <div className="relative">
+              <img
+                className="h-28 w-28 object-cover"
+                src={result.album.cover}
+                alt={result.album.title}
+              />
+              <button
+                type="button"
+                className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transform"
+                onClick={() => handlePlay(result)}
+              >
+                {currentTrack && currentTrack.id === result.id ? (
+                  <i className="fa fa-pause-circle fa-3x" aria-hidden="true" />
+                ) : (
+                  <i className="fa fa-play-circle fa-3x" aria-hidden="true" />
+                )}
+              </button>
+            </div>
+            <h3 className="overflow-hidden overflow-ellipsis text-left text-sm font-bold text-Grey_1">
+              {result.title}
+            </h3>
+            <p className="overflow-hidden overflow-ellipsis pb-2 text-left text-xs text-Grey_2">
+              {result.artist.name}
+            </p>
+          </div>
+        ))}
+      </div>
+      {currentTrack && (
+        <audio
+          src={currentTrack.preview}
+          autoPlay
+          onEnded={() => setCurrentTrack(null)}
+        />
+      )}
+    </div>
   );
 }
 

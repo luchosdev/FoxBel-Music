@@ -24,8 +24,12 @@ module.exports = {
       colors: {
         red_orange: '#EB5757',
         light_red: '#FF7676',
-        white_gray: '#E5E5E5',
+        Red_Principal: '#E86060',
         Dark_Red_Secondary: '#662323',
+        white_gray: '#E5E5E5',
+        Grey_1: '#555555',
+        Grey_2: '#828282',
+        Soft_gray: '#BDBDBD',
       },
       fontFamily: {
         poppins: ['Poppins', 'sans-serif'],

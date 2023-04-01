@@ -1,0 +1,10 @@
+.search-input {
+  position: relative;
+}
+
+.search-button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-10%);
+  right: calc(100% - 2.5rem);
+}

@@ -4,10 +4,17 @@ import Body from './Body/Body';
 
 function Home() {
   return (
-    <section className="flex h-[30.5rem] w-screen justify-between bg-white_gray">
+    <div className="flex h-full">
       <Sidebar />
-      <Body />
-    </section>
+      <div className="relative flex-grow bg-white_gray">
+        <div className="absolute left-0 right-0 top-0 z-10">
+          {/* Barra de búsqueda */}
+        </div>
+        <div className="px-4 py-6">
+          <Body />
+        </div>
+      </div>
+    </div>
   );
 }
 
